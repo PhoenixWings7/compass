@@ -6,14 +6,17 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor compassSensor;
-    float[] rotationMatrix = new float[9];
-    float[] orientation = new float[3];
+    private float[] rotationMatrix = new float[9];
+    private float[] orientation = new float[3];
+    private float rotationOffset = 0;
 
 
     @Override
@@ -47,8 +50,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // why is data not reliable when the device isn't parallel to the ground?
         double angle = SensorManager.getOrientation(rotationMatrix, orientation)[0]; // in radians
         int azimuth = (int) Math.toDegrees(angle);
+        animateCompassRotation(azimuth);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
+
+    private void animateCompassRotation(float azimuth) {
+        ImageView compassImage = findViewById(R.id.compass);
+
+        compassImage.setRotation(azimuth);
+        compassImage.animate();
+    }
 }
