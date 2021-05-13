@@ -10,7 +10,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, CompassMVP.View {
+    private CompassMVP.Presenter mainPresenter;
     private SensorManager sensorManager;
     private Sensor compassSensor;
     private float[] rotationMatrix = new float[9];
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         compassSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mainPresenter = new MainPresenter(this);
     }
 
     @Override
@@ -48,16 +50,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // why is data not reliable when the device isn't parallel to the ground?
         double angle = SensorManager.getOrientation(rotationMatrix, orientation)[0]; // in radians
         int azimuth = (int) Math.toDegrees(angle);
-        animateCompassRotation(azimuth);
+
+        mainPresenter.onAzimuthChanged(azimuth);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
-    private void animateCompassRotation(float azimuth) {
+    @Override
+    public void animateCompassRotation(float azimuth) {
         ImageView compassImage = findViewById(R.id.compass);
 
         compassImage.setRotation(-azimuth);
         compassImage.animate();
+    }
+
+    @Override
+    public void setButtonAction() {
     }
 }
