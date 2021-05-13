@@ -7,5 +7,6 @@ public interface CompassMVP {
     }
     interface Presenter {
         void onAzimuthChanged(int azimuth);
+        void onDestinationChanged(float latitude, float longitude);
     }
 }

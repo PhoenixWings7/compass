@@ -15,4 +15,7 @@ public class MainPresenter implements CompassMVP.Presenter {
     private void setUpViewActions() {
         mainView.setButtonsActions();
     }
+
+    @Override
+    public void onDestinationChanged(float latitude, float longitude) {}
 }

@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -20,8 +21,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private CompassMVP.Presenter mainPresenter;
     private SensorManager sensorManager;
     private Sensor compassSensor;
-    private float[] rotationMatrix = new float[9];
-    private float[] orientation = new float[3];
+    private final float[] rotationMatrix = new float[9];
+    private final float[] orientation = new float[3];
+    private float destinationLatitude;
+    private float destinationLongitude;
 
 
     @Override
@@ -73,13 +76,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void setButtonsActions() {
-        Button btn = findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSetCoordinationBtnClicked(view);
-            }
+        Button setCoordBtn = findViewById(R.id.popup_widow_button);
+        Button saveDestBtn = findViewById(R.id.set_destination);
+
+        setCoordBtn.setOnClickListener(this::onSetCoordinationBtnClicked);
+        saveDestBtn.setOnClickListener(view -> {
+            onSaveDestinationBtnClicked(view);
+            mainPresenter.onDestinationChanged(destinationLatitude, destinationLongitude);
         });
+    }
+
+    private void onSaveDestinationBtnClicked(View view) {
+        EditText latitudeEditText = findViewById(R.id.latitude);
+        EditText longitudeEditText = findViewById(R.id.longitude);
+
+        float latitude = Float.parseFloat(latitudeEditText.getText().toString());
+        float longitude = Float.parseFloat(longitudeEditText.getText().toString());
+
+        this.destinationLatitude = latitude;
+        this.destinationLongitude = longitude;
     }
 
     private void onSetCoordinationBtnClicked(View view) {
