@@ -12,11 +12,55 @@
         android:layout_height="0dp"
         android:contentDescription="@string/compass_description"
         android:src="@drawable/compass"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/popup_widow_button"
         app:layout_constraintHeight_percent="0.8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/arrow_pointer" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/distance_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/arrow_pointer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/popup_background"
+        android:layout_marginTop="@dimen/default_margin"
+        >
+        <TextView
+            android:id="@+id/distance_to_destination_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/distance_num"
+            android:text="@string/distance_to_destination"
+            android:textSize="@dimen/distance_info_text_size"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/distance_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/distance_to_destination_tv"
+            android:text="@string/default_distance_num"
+            android:textSize="@dimen/distance_info_text_size"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/arrow_pointer"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/simple_arrow"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/compass"
+        android:contentDescription="@string/arrow_pointer_description" />
 
     <Button
         android:id="@+id/popup_widow_button"
@@ -24,7 +68,9 @@
         android:layout_height="wrap_content"
         android:text="@string/set_destination_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/compass" />
+        app:layout_constraintTop_toBottomOf="@+id/compass"
+        android:layout_marginBottom="@dimen/default_margin"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
