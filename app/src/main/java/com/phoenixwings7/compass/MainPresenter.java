@@ -13,6 +13,6 @@ public class MainPresenter implements CompassMVP.Presenter {
     }
 
     private void setUpViewActions() {
-        mainView.setButtonAction();
+        mainView.setButtonsActions();
     }
 }
