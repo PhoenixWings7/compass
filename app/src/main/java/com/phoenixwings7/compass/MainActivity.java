@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void animateCompassRotation(float azimuth) {
         ImageView compassImage = findViewById(R.id.compass);
 
-        compassImage.setRotation(azimuth);
+        compassImage.setRotation(-azimuth);
         compassImage.animate();
     }
 }
