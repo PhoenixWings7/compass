@@ -1,10 +1,14 @@
 package com.phoenixwings7.compass;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,13 +20,26 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, CompassMVP.View {
+    public static final int INTERVAL_LENGTH = 30; // seconds
+    public static final int FASTEST_INTERVAL_LENGTH = 5; // seconds
+
     private CompassMVP.Presenter mainPresenter;
     private SensorManager sensorManager;
     private Sensor compassSensor;
     private final float[] rotationMatrix = new float[9];
     private final float[] orientation = new float[3];
+
+    // Google's API for location services
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
     private float destinationLatitude;
     private float destinationLongitude;
 
@@ -75,20 +92,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void setButtonsActions() {
-        Button setCoordBtn = findViewById(R.id.popup_widow_button);
-        Button saveDestBtn = findViewById(R.id.set_destination);
+    public void setUpLocationService() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(1000 * INTERVAL_LENGTH); // milliseconds
+        locationRequest.setFastestInterval(1000 * FASTEST_INTERVAL_LENGTH); // milliseconds
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
 
-        setCoordBtn.setOnClickListener(this::onSetCoordinationBtnClicked);
-        saveDestBtn.setOnClickListener(view -> {
-            onSaveDestinationBtnClicked(view);
-            mainPresenter.onDestinationChanged(destinationLatitude, destinationLongitude);
+    @Override
+    public boolean checkLocationPermission() {
+        int checkResult = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return (checkResult == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @SuppressLint("MissingPermission") // checking permission in MainPresenter before calling this method
+    @Override
+    public void updateLocation() {
+        Task<Location> locationTask = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null);
+        locationTask.addOnSuccessListener(this, location -> {
+            mainPresenter.onUserLocationChanged(location, destinationLatitude, destinationLongitude);
         });
     }
 
+    @Override
+    public void setButtonsActions() {
+        Button setDestinationBtn = findViewById(R.id.popup_widow_button);
+
+        setDestinationBtn.setOnClickListener(this::onSetDestinationBtnClicked);
+    }
+
     private void onSaveDestinationBtnClicked(View view) {
-        EditText latitudeEditText = findViewById(R.id.latitude);
-        EditText longitudeEditText = findViewById(R.id.longitude);
+        View rootView = view.getRootView();
+        EditText latitudeEditText = rootView.findViewById(R.id.latitude);
+        EditText longitudeEditText = rootView.findViewById(R.id.longitude);
+
+        if ((latitudeEditText == null) || (longitudeEditText == null)) {
+            return;
+        }
 
         float latitude = Float.parseFloat(latitudeEditText.getText().toString());
         float longitude = Float.parseFloat(longitudeEditText.getText().toString());
@@ -97,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         this.destinationLongitude = longitude;
     }
 
-    private void onSetCoordinationBtnClicked(View view) {
+    private void onSetDestinationBtnClicked(View view) {
         LayoutInflater inflater = this.getLayoutInflater();
         View popupView = inflater.inflate(R.layout.coordinates_popup, null);
 
@@ -106,6 +148,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true; // lets taps outside the popup to also dismiss it
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // set save button action
+        Button saveDestBtn = popupView.findViewById(R.id.set_destination);
+        saveDestBtn.setOnClickListener(v -> {
+            onSaveDestinationBtnClicked(v);
+            popupWindow.dismiss();
+            mainPresenter.onDestinationChanged(destinationLatitude, destinationLongitude);
+        });
+
 
         // show the popup window
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
