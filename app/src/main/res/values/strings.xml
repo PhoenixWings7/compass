@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Compass</string>
     <string name="compass_description">Compass</string>
+    <string name="arrow_pointer_description">Arrow Pointer</string>
+    <string name="set_destination_text">Set destination</string>
+    <string name="set_your_destination">Set your destination:</string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="save">Save</string>
 </resources>

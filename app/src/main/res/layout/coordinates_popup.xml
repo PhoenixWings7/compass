@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/popup_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:textSize="24sp"
+        android:text="@string/set_your_destination"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="true">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/latitude"
+                android:textSize="22sp"
+                android:labelFor="@id/latitude"/>
+            <EditText
+                android:id="@+id/latitude"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/longitude"
+                android:textSize="22sp"
+                android:labelFor="@id/longitude"/>
+            <EditText
+                android:id="@+id/longitude"
+                android:layout_width="80dp"
+                android:textSize="16sp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/set_destination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/save"/>
+</LinearLayout>

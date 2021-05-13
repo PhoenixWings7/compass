@@ -6,7 +6,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -67,5 +73,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void setButtonAction() {
+        Button btn = findViewById(R.id.button);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSetCoordinationBtnClicked(view);
+            }
+        });
+    }
+
+    private void onSetCoordinationBtnClicked(View view) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.coordinates_popup, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup to also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
 }
