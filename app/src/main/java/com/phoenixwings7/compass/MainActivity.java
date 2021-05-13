@@ -125,7 +125,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void updateDirectionUI(int rotationDegrees) {
-
+        ImageView arrowPointer = findViewById(R.id.arrow_pointer);
+        arrowPointer.setRotation(rotationDegrees);
+        arrowPointer.animate();
     }
 
     @Override
