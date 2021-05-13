@@ -3,6 +3,9 @@ package com.phoenixwings7.compass;
 import android.location.Location;
 
 public class MainPresenter implements CompassMVP.Presenter {
+    private int currentAzimuth = 0;
+    private int currentDirectionAngle = 0;
+
     CompassMVP.View mainView;
     public MainPresenter(CompassMVP.View mainActivity) {
         this.mainView = mainActivity;
@@ -11,6 +14,7 @@ public class MainPresenter implements CompassMVP.Presenter {
 
     @Override
     public void onAzimuthChanged(int azimuth) {
+        this.currentAzimuth = azimuth;
         mainView.animateCompassRotation(azimuth);
     }
 
@@ -44,8 +48,8 @@ public class MainPresenter implements CompassMVP.Presenter {
         // recalculate distance to destination
         float distance = location.distanceTo(targetLocation); // distance in meters
 
-        // todo: update UI
-        System.out.println("Distance: " + distance);
+        mainView.updateDistanceUI(Math.round(distance));
+        mainView.updateDirectionUI(currentAzimuth-currentDirectionAngle);
 
     }
 }

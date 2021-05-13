@@ -7,6 +7,6 @@
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
     <string name="save">Save</string>
-    <string name="distance_to_destination">Distance to destination: </string>
-    <string name="default_distance_num">0 m</string>
+    <string name="distance_to_destination">Distance to destination: %d m</string>
+    <string name="default_distance_to_destination">Distance to destination: — m</string>
 </resources>

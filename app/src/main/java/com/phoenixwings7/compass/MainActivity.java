@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -114,6 +115,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationTask.addOnSuccessListener(this, location -> {
             mainPresenter.onUserLocationChanged(location, destinationLatitude, destinationLongitude);
         });
+    }
+
+    @Override
+    public void updateDistanceUI(int metersToTarget) {
+        TextView distance = findViewById(R.id.distance_to_destination_tv);
+        distance.setText(getString(R.string.distance_to_destination, metersToTarget));
+    }
+
+    @Override
+    public void updateDirectionUI(int rotationDegrees) {
+
     }
 
     @Override

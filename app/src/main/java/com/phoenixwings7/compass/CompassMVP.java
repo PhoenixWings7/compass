@@ -9,6 +9,8 @@ public interface CompassMVP {
         void setUpLocationService();
         boolean checkLocationPermission();
         void updateLocation();
+        void updateDistanceUI(int metersToTarget);
+        void updateDirectionUI(int rotationDegrees);
     }
     interface Presenter {
         void onAzimuthChanged(int azimuth);
