@@ -6,6 +6,7 @@ public class MainPresenter implements CompassMVP.Presenter {
     private int currentAzimuth = 0;
     private int currentDirectionAngle = 0;
     private int currentBearing = 0;
+    private Location currentLocation;
 
     CompassMVP.View mainView;
     public MainPresenter(CompassMVP.View mainActivity) {
@@ -30,6 +31,7 @@ public class MainPresenter implements CompassMVP.Presenter {
         boolean locationPermissionGranted = mainView.checkLocationPermission();
         if (locationPermissionGranted) {
             mainView.updateLocation(); // update user location data to calculate distance to dest.
+            refreshDistanceFeature(latitude, longitude);
         }
         else {
             // todo: display error message
@@ -42,6 +44,15 @@ public class MainPresenter implements CompassMVP.Presenter {
             // if something went wrong while establishing user location, do nothing
             return;
         }
+        refreshDistanceFeature(location, destinationLat, destinationLon);
+    }
+
+    private void refreshDistanceFeature(float destinationLat, float destinationLon) {
+        refreshDistanceFeature(currentLocation, destinationLat, destinationLon);
+    }
+
+    private void refreshDistanceFeature(Location location, float destinationLat, float destinationLon) {
+        currentLocation = location;
 
         Location targetLocation = new Location(""); // provider is not important here
         targetLocation.setLatitude(destinationLat);

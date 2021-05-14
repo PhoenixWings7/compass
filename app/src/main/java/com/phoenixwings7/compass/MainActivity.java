@@ -32,8 +32,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, CompassMVP.View {
-    public static final int INTERVAL_LENGTH = 30; // seconds
-    public static final int FASTEST_INTERVAL_LENGTH = 5; // seconds
+    public static final int INTERVAL_LENGTH = 10; // seconds
+    public static final int FASTEST_INTERVAL_LENGTH = 3; // seconds
 
     private CompassMVP.Presenter mainPresenter;
     private SensorManager sensorManager;
@@ -118,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @SuppressLint("MissingPermission") // checking permission in MainPresenter before calling this method
     @Override
     public void updateLocation() {
-        Task<Location> locationTask = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null);
+        Task<Location> locationTask = fusedLocationProviderClient
+                .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null);
         locationTask.addOnSuccessListener(this, location -> {
             mainPresenter.onUserLocationChanged(location, destinationLatitude, destinationLongitude);
         });
