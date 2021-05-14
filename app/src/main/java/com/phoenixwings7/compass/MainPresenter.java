@@ -60,6 +60,14 @@ public class MainPresenter implements CompassMVP.Presenter {
         mainView.updateDirectionUI(pointerRotation);
     }
 
+    @Override
+    public void setUpLocationUpdates() {
+        boolean permissionsGranted = mainView.checkLocationPermission();
+        if (permissionsGranted) {
+            mainView.startLocationUpdates();
+        }
+    }
+
     private int recalculatePointerRotationAngle() {
         return recalculatePointerRotationAngle(currentBearing);
     }

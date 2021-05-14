@@ -20,11 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
 
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Google's API for location services
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+
     private float destinationLatitude;
     private float destinationLongitude;
 
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        stopLocationUpdates();
     }
 
     @Override
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         sensorManager.registerListener(this, compassSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
+        mainPresenter.setUpLocationUpdates();
     }
 
     @Override
@@ -128,6 +135,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ImageView arrowPointer = findViewById(R.id.arrow_pointer);
         arrowPointer.setRotation(rotationDegrees);
         arrowPointer.animate();
+    }
+
+    @SuppressLint("MissingPermission") // ask for permissions in MainPresenter before calling this method
+    @Override
+    public void startLocationUpdates() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                if (locationResult == null) {
+                    return;
+                }
+                mainPresenter.onUserLocationChanged(locationResult.getLastLocation(),
+                        destinationLatitude, destinationLongitude);
+            }
+        };
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback, getMainLooper());
+    }
+
+    @Override
+    public void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
 
     @Override
