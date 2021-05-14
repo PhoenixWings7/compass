@@ -5,6 +5,7 @@ import android.location.Location;
 public class MainPresenter implements CompassMVP.Presenter {
     private int currentAzimuth = 0;
     private int currentDirectionAngle = 0;
+    private int currentBearing = 0;
 
     CompassMVP.View mainView;
     public MainPresenter(CompassMVP.View mainActivity) {
@@ -16,6 +17,7 @@ public class MainPresenter implements CompassMVP.Presenter {
     public void onAzimuthChanged(int azimuth) {
         this.currentAzimuth = azimuth;
         mainView.animateCompassRotation(azimuth);
+        mainView.updateDirectionUI(recalculatePointerRotationAngle());
     }
 
     private void setUpViewActions() {
@@ -48,8 +50,26 @@ public class MainPresenter implements CompassMVP.Presenter {
         // recalculate distance to destination
         float distance = location.distanceTo(targetLocation); // distance in meters
 
+        // recalculate bearing to destination
+        int bearing = Math.round(location.bearingTo(targetLocation));
+        int pointerRotation = recalculatePointerRotationAngle(bearing);
+        currentBearing = bearing;
+
+        // update UI
         mainView.updateDistanceUI(Math.round(distance));
-        mainView.updateDirectionUI(currentAzimuth-currentDirectionAngle);
+        mainView.updateDirectionUI(pointerRotation);
+    }
+
+    private int recalculatePointerRotationAngle() {
+        return recalculatePointerRotationAngle(currentBearing);
+    }
+
+    private int recalculatePointerRotationAngle(int bearing) {
+        int newPointerDirection = currentAzimuth+bearing;
+        int rotationAngle = newPointerDirection-currentDirectionAngle;
+        currentDirectionAngle = newPointerDirection;
+
+        return rotationAngle;
 
     }
 }
